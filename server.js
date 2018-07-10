@@ -22,7 +22,7 @@ MongoClient.connect(datab.url, { useNewUrlParser: true }, (err, database) => {
     // Make sure you add the database name and not the collection name
     db = database.db("drinksapp_db")
 
-    require('./app/routes')(app, db);
+    require('./app/routes')(app, db); //TODO - WTF is this? :)
 
     app.listen(port, () => {
       console.log('We are live on ' + port);
