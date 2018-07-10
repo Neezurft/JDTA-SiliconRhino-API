@@ -21,7 +21,20 @@ module.exports = function(app, db) {
                 res.send(result.ops[0]);
             }
         });
-    });    
+    });
+
+    app.get('/events/:id', (req, res) => {
+        const id = req.params.id;
+        const details = { '_id': id };
+
+        db.collection('events').findOne(details, (err, item) => {
+          if (err) {
+            res.send({'error': err});
+          } else {
+            res.send(item);
+          }
+        });
+    });
 
     app.delete('/events/:id', (req, res) => {
         const id = req.params.id;
