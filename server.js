@@ -10,11 +10,11 @@ const port = process.env.PORT || 8000;
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use(function (req, res, next) {
 
-  // Website you wish to allow to connect
+  // Allowing Access to domain
   res.setHeader('Access-Control-Allow-Origin', 'http://embeddednotes.com');
 
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Allowing methods
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
 
   // Request headers you wish to allow
   //res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
@@ -22,6 +22,8 @@ app.use(function (req, res, next) {
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
   //res.setHeader('Access-Control-Allow-Credentials', true);
+
+  next();
 });
 
 MongoClient.connect(datab.url, { useNewUrlParser: true }, (err, database) => {
