@@ -5,26 +5,18 @@ const datab          = require('./config/db');
 
 const app            = express();
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 app.use(bodyParser.urlencoded({ extended: true })); 
-
-// require('./app/routes')(app, {});
-// app.listen(port, () => {
-//   console.log('We are live on ' + port);
-// });
-
-// Git test :)
 
 MongoClient.connect(datab.url, { useNewUrlParser: true }, (err, database) => {
     if (err) {
         return console.log(err);
     }        
                         
-    // Make sure you add the database name and not the collection name
     db = database.db("drinksapp_db")
 
-    require('./app/routes')(app, db); //TODO - WTF is this? :)
+    require('./app/routes')(app, db);
 
     app.listen(port, () => {
       console.log('We are live on ' + port);

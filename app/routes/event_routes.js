@@ -23,6 +23,7 @@ module.exports = function(app, db) {
     //     });
     // });
 
+    // Sends a single event from db
     app.get('/events/:id', (req, res) => {
         const id = req.params.id;
         const details = { '_id': id };
@@ -36,7 +37,8 @@ module.exports = function(app, db) {
         });
     });
 
-    // Search get implementation below
+    // Sends an array of events, based on a search term that is applied to the title of events
+    // stored in the db
     app.get('/events', (req, res) => {
         const page = parseInt(req.query.page);
         const pageSize = parseInt(req.query.pageSize);
