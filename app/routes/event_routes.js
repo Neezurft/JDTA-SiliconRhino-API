@@ -1,4 +1,6 @@
 //var ObjectID = require('mongodb').ObjectID;
+var bcrypt = require('bcrypt');
+//const saltRounds = 10;
 
 module.exports = function(app, db) {
 
@@ -94,32 +96,34 @@ module.exports = function(app, db) {
 
   // Adds a comment to an event
   app.put('/addComment', (req, res) => {
-      const details = { '_id': req.body.id };
-      const comment = req.body.comment;
-      const timestamp = req.body.timestamp;
+    const details = { '_id': req.body.id };
+    const username = req.body.username;
+    const imgUrl = req.body.imgUrl;
+    const comment = req.body.comment;
+    const timestamp = req.body.timestamp;
 
-      db.collection('events').findOne(details, (err, event) => {
-        if (err) {
-          res.send({'error': err});
-        } else {
-          event.comments.push({
-            "user": {
-              "name": "Anonymous",
-              "avatarUrl": "https://www.shareicon.net/data/128x128/2015/09/16/101936_hacker_512x512.png"
-            },
-            "timestamp": timestamp,
-            "message": comment
-          });
-          
-          db.collection('events').update(details, event, (err, result) => {
-            if (err) {
-                res.send({'error': err});
-            } else {  
-                res.send({'success' : 'comment added'});
-            } 
-          });            
-        }
-      });
+    db.collection('events').findOne(details, (err, event) => {
+      if (err) {
+        res.send({'error': err});
+      } else {
+        event.comments.push({
+          "user": {
+            "name": username,
+            "avatarUrl": imgUrl
+          },
+          "timestamp": timestamp,
+          "message": comment
+        });
+        
+        db.collection('events').update(details, event, (err, result) => {
+          if (err) {
+              res.send({'error': err});
+          } else {  
+              res.send({'success' : 'comment added'});
+          } 
+        });            
+      }
+    });
   });
 
   // Verifies that the user is valid and is allowed to post comments
@@ -127,10 +131,23 @@ module.exports = function(app, db) {
     const username = req.query.user;
     const password = req.query.pass;
 
-    if( username == 'Anonymous' && password == 'escanor')
-      res.send({ valid : true});
-    else 
-      res.send({ valid : false});
+    db.collection('users').findOne({'name' : username }, (err, user) => {
+      if (err) {
+        res.send({ valid : false});
+      } else {
+
+        bcrypt.compare(password, user.pass, function(err, r) {
+          if(r)
+            res.send({
+               valid : true,
+               url : user.imgUrl
+              });
+          else 
+            res.send({ valid : false});
+        });
+            
+      }
+    });
 
   });
 
