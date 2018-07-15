@@ -135,20 +135,22 @@ module.exports = function(app, db) {
       if (err) {
         res.send({ valid : false});
       } else {
-
-        bcrypt.compare(password, user.pass, function(err, r) {
-          if(r)
-            res.send({
-               valid : true,
-               url : user.imgUrl
-              });
-          else 
-            res.send({ valid : false});
-        });
-            
+        if(user!=null){
+          bcrypt.compare(password, user.pass, function(err, r) {
+            if(r)
+              res.send({
+                valid : true,
+                url : user.imgUrl
+                });
+            else 
+              res.send({ valid : false});
+          });
+        } else {
+          res.send({ valid : false});
+        }   
       }
     });
-
+    
   });
 
 };
